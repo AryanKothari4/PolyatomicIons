@@ -1,5 +1,61 @@
-const compounds = [ /* The data array remains unchanged */ { name: "Dihydrogen phosphite", formula: "H2PO3", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Dihydrogen phosphate", formula: "H2PO4", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Hydrogen sulfite", formula: "HSO3", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Hydrogen sulfate", formula: "HSO4", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Hydrogen oxalate", formula: "HC2O4", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Thiocyanate", formula: "SCN", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Cyanide", formula: "CN", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Acetate", formula: "C2H3O2", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Permanganate", formula: "MnO4", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Hydrogen carbonate", formula: "HCO3", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Hydroxide", formula: "OH", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Nitrite", formula: "NO2", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Nitrate", formula: "NO3", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Hypochlorite", formula: "ClO", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Chlorite", formula: "ClO2", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Chlorate", formula: "ClO3", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Perchlorate", formula: "ClO4", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Hypoiodite", formula: "IO", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Iodite", formula: "IO2", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Iodate", formula: "IO3", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Periodate", formula: "IO4", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Hypobromite", formula: "BrO", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Bromite", formula: "BrO2", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Bromate", formula: "BrO3", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Perbromate", formula: "BrO4", charge: "1-", category: "Oxidation State 1⁻" }, { name: "Hydrogen phosphite", formula: "HPO3", charge: "2-", category: "Oxidation State 2⁻" }, { name: "Hydrogen phosphate", formula: "HPO4", charge: "2-", category: "Oxidation State 2⁻" }, { name: "Sulfite", formula: "SO3", charge: "2-", category: "Oxidation State 2⁻" }, { name: "Sulfate", formula: "SO4", charge: "2-", category: "Oxidation State 2⁻" }, { name: "Oxalate", formula: "C2O4", charge: "2-", category: "Oxidation State 2⁻" }, { name: "Thiosulfate", formula: "S2O3", charge: "2-", category: "Oxidation State 2⁻" }, { name: "Silicate", formula: "SiO3", charge: "2-", category: "Oxidation State 2⁻" }, { name: "Chromate", formula: "CrO4", charge: "2-", category: "Oxidation State 2⁻" }, { name: "Dichromate", formula: "Cr2O7", charge: "2-", category: "Oxidation State 2⁻" }, { name: "Carbonate", formula: "CO3", charge: "2-", category: "Oxidation State 2⁻" }, { name: "Phosphite", formula: "PO3", charge: "3-", category: "Oxidation State 3⁻" }, { name: "Phosphate", formula: "PO4", charge: "3-", category: "Oxidation State 3⁻" }, { name: "Arsenate", formula: "AsO4", charge: "3-", category: "Oxidation State 3⁻" }, { name: "Borate", formula: "BO3", charge: "3-", category: "Oxidation State 3⁻" }, { name: "Ammonium", formula: "NH4", charge: "1+", category: "Oxidation State 1⁺" }, { name: "Methane", formula: "CH4", charge: null, category: "Organic (Alkanes)" }, { name: "Ethane", formula: "C2H6", charge: null, category: "Organic (Alkanes)" }, { name: "Propane", formula: "C3H8", charge: null, category: "Organic (Alkanes)" }, { name: "Butane", formula: "C4H10", charge: null, category: "Organic (Alkanes)" }, { name: "Pentane", formula: "C5H12", charge: null, category: "Organic (Alkanes)" }, { name: "Hexane", formula: "C6H14", charge: null, category: "Organic (Alkanes)" }, { name: "Heptane", formula: "C7H16", charge: null, category: "Organic (Alkanes)" }, { name: "Octane", formula: "C8H18", charge: null, category: "Organic (Alkanes)" }, { name: "Nonane", formula: "C9H20", charge: null, category: "Organic (Alkanes)" }, { name: "Decane", formula: "C10H22", charge: null, category: "Organic (Alkanes)" } ];
-
+const compounds = [
+    // Oxidation State 1-
+    { name: "Dihydrogen phosphite", formula: "H2PO3", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Dihydrogen phosphate", formula: "H2PO4", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Hydrogen sulfite", formula: "HSO3", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Hydrogen sulfate", formula: "HSO4", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Hydrogen oxalate", formula: "HC2O4", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Thiocyanate", formula: "SCN", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Cyanide", formula: "CN", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Acetate", formula: "C2H3O2", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Permanganate", formula: "MnO4", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Hydrogen carbonate", formula: "HCO3", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Hydroxide", formula: "OH", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Nitrite", formula: "NO2", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Nitrate", formula: "NO3", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Hypochlorite", formula: "ClO", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Chlorite", formula: "ClO2", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Chlorate", formula: "ClO3", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Perchlorate", formula: "ClO4", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Hypoiodite", formula: "IO", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Iodite", formula: "IO2", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Iodate", formula: "IO3", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Periodate", formula: "IO4", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Hypobromite", formula: "BrO", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Bromite", formula: "BrO2", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Bromate", formula: "BrO3", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Perbromate", formula: "BrO4", charge: "1-", category: "Oxidation State 1⁻" },
+    // Oxidation State 2-
+    { name: "Hydrogen phosphite", formula: "HPO3", charge: "2-", category: "Oxidation State 2⁻" },
+    { name: "Hydrogen phosphate", formula: "HPO4", charge: "2-", category: "Oxidation State 2⁻" },
+    { name: "Sulfite", formula: "SO3", charge: "2-", category: "Oxidation State 2⁻" },
+    { name: "Sulfate", formula: "SO4", charge: "2-", category: "Oxidation State 2⁻" },
+    { name: "Oxalate", formula: "C2O4", charge: "2-", category: "Oxidation State 2⁻" },
+    // --- THIS IS THE FIXED LINE ---
+    { name: "Thiosulfate", formula: "S2O3", charge: "2-", category: "Oxidation State 2⁻" },
+    { name: "Silicate", formula: "SiO3", charge: "2-", category: "Oxidation State 2⁻" },
+    { name: "Chromate", formula: "CrO4", charge: "2-", category: "Oxidation State 2⁻" },
+    { name: "Dichromate", formula: "Cr2O7", charge: "2-", category: "Oxidation State 2⁻" },
+    { name: "Carbonate", formula: "CO3", charge: "2-", category: "Oxidation State 2⁻" },
+    // Oxidation State 3-
+    { name: "Phosphite", formula: "PO3", charge: "3-", category: "Oxidation State 3⁻" },
+    { name: "Phosphate", formula: "PO4", charge: "3-", category: "Oxidation State 3⁻" },
+    { name: "Arsenate", formula: "AsO4", charge: "3-", category: "Oxidation State 3⁻" },
+    { name: "Borate", formula: "BO3", charge: "3-", category: "Oxidation State 3⁻" },
+    // Oxidation State 1+
+    { name: "Ammonium", formula: "NH4", charge: "1+", category: "Oxidation State 1⁺" },
+    // Organic (Alkanes)
+    { name: "Methane", formula: "CH4", charge: null, category: "Organic (Alkanes)" },
+    { name: "Ethane", formula: "C2H6", charge: null, category: "Organic (Alkanes)" },
+    { name: "Propane", formula: "C3H8", charge: null, category: "Organic (Alkanes)" },
+    { name: "Butane", formula: "C4H10", charge: null, category: "Organic (Alkanes)" },
+    { name: "Pentane", formula: "C5H12", charge: null, category: "Organic (Alkanes)" },
+    { name: "Hexane", formula: "C6H14", charge: null, category: "Organic (Alkanes)" },
+    { name: "Heptane", formula: "C7H16", charge: null, category: "Organic (Alkanes)" },
+    { name: "Octane", formula: "C8H18", charge: null, category: "Organic (Alkanes)" },
+    { name: "Nonane", formula: "C9H20", charge: null, category: "Organic (Alkanes)" },
+    { name: "Decane", formula: "C10H22", charge: null, category: "Organic (Alkanes)" }
+];
 const selectionContainer = document.getElementById('selection-container'), startQuizForm = document.getElementById('start-quiz-form'), startQuizButton = document.getElementById('start-quiz-button'), studySetCheckboxes = document.querySelectorAll('input[name="study-set"]'), selectAllCheckbox = document.getElementById('select-all-checkbox'), quizBox = document.getElementById('quiz-box'), completionScreen = document.getElementById('completion-screen'), progressCounter = document.getElementById('progress-counter'), questionPrompt = document.getElementById('question-prompt'), questionItem = document.getElementById('question-item'), answerForm = document.getElementById('answer-form'), answerInput = document.getElementById('answer-input'), checkButton = document.getElementById('check-button'), hintButton = document.getElementById('hint-button'), feedbackMessage = document.getElementById('feedback-message'), continuePrompt = document.getElementById('continue-prompt'), restartButton = document.getElementById('restart-button'), finalScore = document.getElementById('final-score'), reviewSection = document.getElementById('review-section'), wrongAnswersList = document.getElementById('wrong-answers-list');
 let quizItems = [], currentItem = null, questionType = 'name', totalItemsInQuiz = 0, quizDirection = 'random', quizWithCharge = true, isWaitingForContinue = false, wronglyAnswered = [], lastWronglyAnswered = [];
 
