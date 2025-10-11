@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemistry Quiz</title>
+    <!-- Link to the external CSS file -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="quiz-container" id="selection-container">
+        <h1>Chemistry Quiz</h1>
+        <p class="setup-description">Select your study sets, charge mode, and quiz mode.</p>
+        <form id="start-quiz-form">
+            
+            <fieldset class="study-set-selector">
+                <legend>Choose Study Sets</legend>
+                <div class="study-set-options">
+                    <label><input type="checkbox" name="study-set" value="Oxidation State 1⁻"> Oxidation State 1⁻</label>
+                    <label><input type="checkbox" name="study-set" value="Oxidation State 2⁻"> Oxidation State 2⁻</label>
+                    <label><input type="checkbox" name="study-set" value="Oxidation State 3⁻"> Oxidation State 3⁻</label>
+                    <label><input type="checkbox" name="study-set" value="Oxidation State 1⁺"> Oxidation State 1⁺</label>
+                    <label><input type="checkbox" name="study-set" value="Organic (Alkanes)"> Alkanes</label>
+                    <label class="select-all"><input type="checkbox" id="select-all-checkbox"> Select All</label>
+                </div>
+            </fieldset>
+
+            <fieldset class="quiz-mode-selector">
+                <legend>Quiz with Oxidation States?</legend>
+                <div class="quiz-mode-options">
+                    <label><input type="radio" name="charge-mode" value="with-charge" checked> Yes</label>
+                    <label><input type="radio" name="charge-mode" value="without-charge"> No</label>
+                </div>
+                <p class="fieldset-note">If "Yes", answer with formula and charge (e.g., <strong>SO4 2-</strong>)</p>
+            </fieldset>
+
+            <fieldset class="quiz-mode-selector">
+                <legend>Quiz Mode</legend>
+                <div class="quiz-mode-options">
+                    <label><input type="radio" name="quiz-direction" value="name-to-formula"> Name → Formula</label>
+                    <label><input type="radio" name="quiz-direction" value="formula-to-name"> Formula → Name</label>
+                    <label><input type="radio" name="quiz-direction" value="random" checked> Random</label>
+                </div>
+            </fieldset>
+
+            <button type="submit" id="start-quiz-button" disabled>Start Quiz</button>
+        </form>
+    </div>
+
+    <div class="quiz-container" id="quiz-box">
+        <h1>Chemistry Quiz</h1>
+        <p id="progress-counter"></p>
+        <div id="question-area">
+            <p id="question-prompt"></p>
+            <h2 id="question-item"></h2>
+        </div>
+        <form id="answer-form">
+            <div class="input-group">
+                <input type="text" id="answer-input" placeholder="Type your answer..." autocomplete="off" autofocus>
+                <button type="button" id="hint-button">Hint</button>
+                <button type="submit" id="check-button">Check</button>
+            </div>
+        </form>
+        <div id="feedback-message"></div>
+        <p id="continue-prompt">Press Enter or click Continue</p>
+    </div>
+
+    <div class="quiz-container" id="completion-screen">
+        <h2>Quiz Complete!</h2>
+        <p id="final-score"></p>
+        <div id="review-section" style="display: none;">
+            <h3>Items to Review:</h3>
+            <ul id="wrong-answers-list"></ul>
+        </div>
+        <button id="restart-button">Quiz Again</button>
+    </div>
+
+    <!-- Link to the external JavaScript file -->
+    <script src="script.js" defer></script>
+</body>
+</html>

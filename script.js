@@ -1,0 +1,286 @@
+const compounds = [
+    // Oxidation State 1-
+    { name: "Dihydrogen phosphite", formula: "H2PO3", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Dihydrogen phosphate", formula: "H2PO4", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Hydrogen sulfite", formula: "HSO3", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Hydrogen sulfate", formula: "HSO4", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Hydrogen oxalate", formula: "HC2O4", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Thiocyanate", formula: "SCN", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Cyanide", formula: "CN", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Acetate", formula: "C2H3O2", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Permanganate", formula: "MnO4", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Hydrogen carbonate", formula: "HCO3", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Hydroxide", formula: "OH", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Nitrite", formula: "NO2", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Nitrate", formula: "NO3", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Hypochlorite", formula: "ClO", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Chlorite", formula: "ClO2", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Chlorate", formula: "ClO3", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Perchlorate", formula: "ClO4", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Hypoiodite", formula: "IO", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Iodite", formula: "IO2", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Iodate", formula: "IO3", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Periodate", formula: "IO4", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Hypobromite", formula: "BrO", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Bromite", formula: "BrO2", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Bromate", formula: "BrO3", charge: "1-", category: "Oxidation State 1⁻" },
+    { name: "Perbromate", formula: "BrO4", charge: "1-", category: "Oxidation State 1⁻" },
+    // Oxidation State 2-
+    { name: "Hydrogen phosphite", formula: "HPO3", charge: "2-", category: "Oxidation State 2⁻" },
+    { name: "Hydrogen phosphate", formula: "HPO4", charge: "2-", category: "Oxidation State 2⁻" },
+    { name: "Sulfite", formula: "SO3", charge: "2-", category: "Oxidation State 2⁻" },
+    { name: "Sulfate", formula: "SO4", charge: "2-", category: "Oxidation State 2⁻" },
+    { name: "Oxalate", formula: "C2O4", charge: "2-", category: "Oxidation State 2⁻" },
+    { name: "Thiosulfate", formula: "S2O3", charge: "2-", category: "Oxidation State 2⁻" },
+    { name: "Silicate", formula: "SiO3", charge: "2-", category: "Oxidation State 2⁻" },
+    { name: "Chromate", formula: "CrO4", charge: "2-", category: "Oxidation State 2⁻" },
+    { name: "Dichromate", formula: "Cr2O7", charge: "2-", category: "Oxidation State 2⁻" },
+    { name: "Carbonate", formula: "CO3", charge: "2-", category: "Oxidation State 2⁻" },
+    // Oxidation State 3-
+    { name: "Phosphite", formula: "PO3", charge: "3-", category: "Oxidation State 3⁻" },
+    { name: "Phosphate", formula: "PO4", charge: "3-", category: "Oxidation State 3⁻" },
+    { name: "Arsenate", formula: "AsO4", charge: "3-", category: "Oxidation State 3⁻" },
+    { name: "Borate", formula: "BO3", charge: "3-", category: "Oxidation State 3⁻" },
+    // Oxidation State 1+
+    { name: "Ammonium", formula: "NH4", charge: "1+", category: "Oxidation State 1⁺" },
+    // Organic (Alkanes)
+    { name: "Methane", formula: "CH4", charge: null, category: "Organic (Alkanes)" },
+    { name: "Ethane", formula: "C2H6", charge: null, category: "Organic (Alkanes)" },
+    { name: "Propane", formula: "C3H8", charge: null, category: "Organic (Alkanes)" },
+    { name: "Butane", formula: "C4H10", charge: null, category: "Organic (Alkanes)" },
+    { name: "Pentane", formula: "C5H12", charge: null, category: "Organic (Alkanes)" },
+    { name: "Hexane", formula: "C6H14", charge: null, category: "Organic (Alkanes)" },
+    { name: "Heptane", formula: "C7H16", charge: null, category: "Organic (Alkanes)" },
+    { name: "Octane", formula: "C8H18", charge: null, category: "Organic (Alkanes)" },
+    { name: "Nonane", formula: "C9H20", charge: null, category: "Organic (Alkanes)" },
+    { name: "Decane", formula: "C10H22", charge: null, category: "Organic (Alkanes)" }
+];
+
+// DOM Elements
+const selectionContainer = document.getElementById('selection-container');
+const startQuizForm = document.getElementById('start-quiz-form');
+const startQuizButton = document.getElementById('start-quiz-button');
+const studySetCheckboxes = document.querySelectorAll('input[name="study-set"]');
+const selectAllCheckbox = document.getElementById('select-all-checkbox');
+const quizBox = document.getElementById('quiz-box');
+const completionScreen = document.getElementById('completion-screen');
+const progressCounter = document.getElementById('progress-counter');
+const questionPrompt = document.getElementById('question-prompt');
+const questionItem = document.getElementById('question-item');
+const answerForm = document.getElementById('answer-form');
+const answerInput = document.getElementById('answer-input');
+const checkButton = document.getElementById('check-button');
+const hintButton = document.getElementById('hint-button');
+const feedbackMessage = document.getElementById('feedback-message');
+const continuePrompt = document.getElementById('continue-prompt');
+const restartButton = document.getElementById('restart-button');
+const finalScore = document.getElementById('final-score');
+const reviewSection = document.getElementById('review-section');
+const wrongAnswersList = document.getElementById('wrong-answers-list');
+
+// Quiz State
+let quizItems = [], currentItem = null, questionType = 'name', totalItemsInQuiz = 0;
+let quizDirection = 'random', quizWithCharge = true, isWaitingForContinue = false, wronglyAnswered = [];
+let lastWronglyAnswered = [];
+
+// --- UTILITY FUNCTIONS ---
+function formatFormula(formula, charge) {
+    const formattedFormula = formula.replace(/(\d+)/g, '<sub>$1</sub>');
+    if (!charge) return formattedFormula;
+
+    const chargeSymbol = charge.slice(-1); // + or -
+    const chargeValue = charge.slice(0, -1); // 2, 3, etc. or "" for 1
+    const formattedCharge = (chargeValue === "1" ? "" : chargeValue) + chargeSymbol;
+    return `${formattedFormula}<sup>${formattedCharge}</sup>`;
+}
+
+// --- SETUP & EVENT LISTENERS ---
+function updateStartButtonState() {
+    const anyChecked = Array.from(studySetCheckboxes).some(cb => cb.checked);
+    startQuizButton.disabled = !anyChecked;
+}
+
+selectAllCheckbox.addEventListener('change', () => {
+    studySetCheckboxes.forEach(checkbox => checkbox.checked = selectAllCheckbox.checked);
+    updateStartButtonState();
+});
+
+studySetCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', () => {
+        if (!checkbox.checked) {
+            selectAllCheckbox.checked = false;
+        }
+        updateStartButtonState();
+    });
+});
+
+startQuizForm.addEventListener('submit', handleQuizStart);
+answerForm.addEventListener('submit', checkAnswer);
+hintButton.addEventListener('click', showHint);
+restartButton.addEventListener('click', resetToSelection);
+
+// --- QUIZ LOGIC ---
+function handleQuizStart(event) {
+    event.preventDefault();
+    
+    const selectedCategories = Array.from(studySetCheckboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+
+    quizDirection = document.querySelector('input[name="quiz-direction"]:checked').value;
+    const chargeMode = document.querySelector('input[name="charge-mode"]:checked').value;
+    quizWithCharge = (chargeMode === 'with-charge');
+
+    let selectedItems = compounds.filter(item => selectedCategories.includes(item.category));
+    
+    // Filter out alkanes if quizzing with charge, since they have none
+    if (quizWithCharge) {
+        selectedItems = selectedItems.filter(item => item.category !== 'Organic (Alkanes)');
+    }
+    
+    if (selectedItems.length === 0) {
+        alert("Your selected combination resulted in no items to quiz. Please select a different combination (e.g., Alkanes cannot be quizzed 'with charge').");
+        return;
+    }
+
+    startGame(selectedItems);
+}
+
+function startGame(selectedItems) {
+    quizItems = [...selectedItems];
+    totalItemsInQuiz = selectedItems.length;
+    wronglyAnswered = [];
+    selectionContainer.style.display = 'none';
+    completionScreen.style.display = 'none';
+    quizBox.style.display = 'block';
+    nextQuestion();
+}
+
+function nextQuestion() {
+    if (quizItems.length === 0) { endGame(); return; }
+
+    isWaitingForContinue = false;
+    feedbackMessage.innerHTML = '';
+    continuePrompt.style.display = 'none';
+    checkButton.textContent = 'Check';
+    answerInput.disabled = false;
+    hintButton.disabled = false;
+    answerInput.value = '';
+    progressCounter.textContent = `${totalItemsInQuiz - quizItems.length + 1} / ${totalItemsInQuiz}`;
+    
+    const randomIndex = Math.floor(Math.random() * quizItems.length);
+    currentItem = quizItems[randomIndex];
+    
+    if (quizDirection === 'random') {
+        questionType = Math.random() < 0.5 ? 'name' : 'formula';
+    } else if (quizDirection === 'name-to-formula') {
+        questionType = 'name';
+    } else {
+        questionType = 'formula';
+    }
+
+    // Alkanes can't be asked Formula -> Name if quizWithCharge is true, so swap direction
+    if (questionType === 'formula' && !currentItem.charge && quizWithCharge) {
+        questionType = 'name';
+    }
+
+    questionPrompt.textContent = questionType === 'name' ? 'What is the formula for...' : 'What is the name for...';
+    questionItem.innerHTML = questionType === 'name' ? currentItem.name : formatFormula(currentItem.formula, currentItem.charge);
+    answerInput.focus();
+}
+
+function checkAnswer(event) {
+    event.preventDefault();
+    if (isWaitingForContinue) { nextQuestion(); return; }
+
+    const userAnswer = answerInput.value.trim();
+    if (!userAnswer) return;
+
+    let isCorrect = false;
+    if (questionType === 'name') { // User is guessing the formula
+        if (quizWithCharge && currentItem.charge) {
+            const parts = userAnswer.split(' ');
+            const userFormula = parts[0];
+            const userCharge = parts[1];
+            // Normalize single +/- to 1+/- for comparison
+            const normalizedUserCharge = userCharge === '+' ? '1+' : (userCharge === '-' ? '1-' : userCharge);
+            isCorrect = userFormula.toLowerCase() === currentItem.formula.toLowerCase() && normalizedUserCharge === currentItem.charge;
+        } else {
+            isCorrect = userAnswer.toLowerCase() === currentItem.formula.toLowerCase();
+        }
+    } else { // User is guessing the name
+        isCorrect = userAnswer.toLowerCase() === currentItem.name.toLowerCase();
+    }
+
+    if (isCorrect) {
+        feedbackMessage.innerHTML = `<span class="correct">Correct!</span>`;
+        quizItems = quizItems.filter(item => item !== currentItem);
+        answerInput.disabled = true; hintButton.disabled = true;
+        setTimeout(nextQuestion, 700);
+    } else {
+        const correctAnswer = questionType === 'name' ? 
+            `${currentItem.formula}${currentItem.charge ? ` ${currentItem.charge}` : ''}` : 
+            currentItem.name;
+        feedbackMessage.innerHTML = `<span class="incorrect">Incorrect. The answer is ${correctAnswer}.</span>`;
+        if (!wronglyAnswered.includes(currentItem)) { 
+            wronglyAnswered.push(currentItem);
+        }
+        isWaitingForContinue = true;
+        answerInput.disabled = true; hintButton.disabled = true;
+        checkButton.textContent = 'Continue';
+        continuePrompt.style.display = 'block';
+        checkButton.focus();
+    }
+}
+
+function showHint() {
+    if (currentItem && !isWaitingForContinue) {
+        let hintText = '';
+        if (questionType === 'name') {
+            const elements = [...new Set(currentItem.formula.replace(/[^A-Za-z]/g, ''))].join(', ');
+            hintText = `Hint: The formula contains the elements: ${elements}.`;
+            if (quizWithCharge && currentItem.charge) {
+                hintText += ` The charge is ${currentItem.charge}.`;
+            }
+        } else {
+            const hintPrefix = currentItem.name.substring(0, 3);
+            hintText = `Hint: The name starts with "${hintPrefix}...".`;
+        }
+        feedbackMessage.innerHTML = `<span class="hint-message">${hintText}</span>`;
+        hintButton.disabled = true;
+        answerInput.focus();
+    }
+}
+
+function endGame() {
+    quizBox.style.display = 'none';
+    lastWronglyAnswered = [...wronglyAnswered];
+    finalScore.textContent = wronglyAnswered.length === 0 ? 
+        `Perfect score! You got all ${totalItemsInQuiz} correct.` : 
+        `You missed ${wronglyAnswered.length} out of ${totalItemsInQuiz} items.`;
+
+    if (wronglyAnswered.length > 0) {
+        wrongAnswersList.innerHTML = '';
+        wronglyAnswered.forEach(item => {
+            const listItem = document.createElement('li');
+            const formulaHTML = formatFormula(item.formula, item.charge);
+            listItem.innerHTML = `${item.name} (${formulaHTML})`;
+            wrongAnswersList.appendChild(listItem);
+        });
+        reviewSection.style.display = 'block';
+    } else {
+        reviewSection.style.display = 'none';
+    }
+    completionScreen.style.display = 'flex';
+}
+
+function resetToSelection() {
+    completionScreen.style.display = 'none';
+    selectionContainer.style.display = 'block';
+    
+    // This part is for a potential "Review Wrong Answers" feature in the future
+    // For now, it just resets the form.
+    studySetCheckboxes.forEach(cb => cb.checked = false);
+    selectAllCheckbox.checked = false;
+    updateStartButtonState();
+}
