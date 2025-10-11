@@ -14,8 +14,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    /* --- THIS IS THE NEW GRADIENT --- */
-    background: linear-gradient(135deg, #13547a 0%, #80d0c7 100%);
+    background: linear-gradient(to right, #41295a, #2F0743);
     background-attachment: fixed;
     color: #fff;
     padding: 20px;
@@ -25,12 +24,12 @@ body {
     width: 100%;
     max-width: 550px;
     padding: 40px;
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 16px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     text-align: center;
     transition: opacity 0.3s ease, transform 0.3s ease;
 }
@@ -49,6 +48,14 @@ h1 { margin-bottom: 10px; }
     line-height: normal;
 }
 
+/* Superscript styling (optional, but good practice to keep) */
+#question-item sup, #wrong-answers-list sup, #feedback-message sup {
+    font-size: 0.65em;
+    vertical-align: super;
+    line-height: normal;
+}
+
+
 .input-group { display: flex; gap: 10px; }
 #answer-input { flex-grow: 1; }
 #answer-input { padding: 15px; font-size: 1rem; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.5); background: rgba(255, 255, 255, 0.2); color: #fff; outline: none; transition: all 0.2s ease; font-family: 'Poppins', sans-serif; }
@@ -65,16 +72,16 @@ h1 { margin-bottom: 10px; }
 .study-set-options input[type="checkbox"]::before, .quiz-mode-options input[type="radio"]::before { content: ''; display: block; width: 18px; height: 18px; border: 2px solid rgba(255, 255, 255, 0.5); background-color: rgba(255, 255, 255, 0.2); transition: all 0.2s ease; }
 .quiz-mode-options input[type="radio"]::before { border-radius: 50%; }
 .study-set-options input[type="checkbox"]::before { border-radius: 4px; }
-.study-set-options input[type="checkbox"]:checked::before, .quiz-mode-options input[type="radio"]:checked::before { background-color: #fff; border-color: #fff; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.5); }
+.study-set-options input[type="checkbox"]:checked::before, .quiz-mode-options input[type="radio"]:checked::before { background-color: #fff; border-color: #fff; box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.4); }
 .select-all { grid-column: 1 / -1; justify-content: center; font-weight: 600; margin-top: 5px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 15px; }
 
 .fieldset-note { font-size: 0.8rem; text-align: center; opacity: 0.7; margin-top: 15px; }
 .fieldset-note strong { font-weight: 600; }
 
-button { padding: 15px 25px; font-size: 1rem; font-weight: 600; border: none; border-radius: 8px; background: #fff; color: #13547a; cursor: pointer; transition: all 0.2s ease; width: 100%; }
+button { padding: 15px 25px; font-size: 1rem; font-weight: 600; border: none; border-radius: 8px; background: #fff; color: #2c3e50; cursor: pointer; transition: all 0.2s ease; width: 100%; }
 .input-group button { width: auto; }
 button:hover { background: #f0f0f0; transform: translateY(-2px); }
-button:disabled { opacity: 0.5; cursor: not-allowed; transform: translateY(0); background: #fff; color: #13547a; }
+button:disabled { opacity: 0.5; cursor: not-allowed; transform: translateY(0); background: #fff; color: #2c3e50; }
 
 #hint-button { background: transparent; border: 1px solid rgba(255, 255, 255, 0.6); color: #fff; width: auto; padding: 15px; }
 #hint-button:hover:not(:disabled) { background: rgba(255, 255, 255, 0.2); }
