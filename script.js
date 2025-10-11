@@ -96,7 +96,7 @@ function formatFormula(formula, charge) {
 
 // --- SETUP & EVENT LISTENERS ---
 function updateStartButtonState() {
-    const anyChecked = Array.from(studySetCheckboxes).some(cb => cb.checked);
+    const anyChecked = Array.from(document.querySelectorAll('input[name="study-set"]')).some(cb => cb.checked);
     startQuizButton.disabled = !anyChecked;
 }
 
@@ -123,15 +123,28 @@ restartButton.addEventListener('click', resetToSelection);
 function handleQuizStart(event) {
     event.preventDefault();
     
-    const selectedCategories = Array.from(studySetCheckboxes)
-        .filter(cb => cb.checked)
-        .map(cb => cb.value);
+    const selectedCheckboxes = Array.from(document.querySelectorAll('input[name="study-set"]:checked'));
+    const selectedCategories = selectedCheckboxes.map(cb => cb.value);
 
     quizDirection = document.querySelector('input[name="quiz-direction"]:checked').value;
     const chargeMode = document.querySelector('input[name="charge-mode"]:checked').value;
     quizWithCharge = (chargeMode === 'with-charge');
 
-    let selectedItems = compounds.filter(item => selectedCategories.includes(item.category));
+    const itemsForQuiz = new Set();
+    
+    // Add items from regularly selected categories
+    compounds.forEach(item => {
+        if (selectedCategories.includes(item.category)) {
+            itemsForQuiz.add(item);
+        }
+    });
+
+    // Add items from the "Review Wrong Answers" set if selected
+    if (selectedCategories.includes('review-wrong')) {
+        lastWronglyAnswered.forEach(item => itemsForQuiz.add(item));
+    }
+
+    let selectedItems = Array.from(itemsForQuiz);
     
     // Filter out alkanes if quizzing with charge, since they have none
     if (quizWithCharge) {
@@ -145,6 +158,7 @@ function handleQuizStart(event) {
 
     startGame(selectedItems);
 }
+
 
 function startGame(selectedItems) {
     quizItems = [...selectedItems];
@@ -179,7 +193,6 @@ function nextQuestion() {
         questionType = 'formula';
     }
 
-    // Alkanes can't be asked Formula -> Name if quizWithCharge is true, so swap direction
     if (questionType === 'formula' && !currentItem.charge && quizWithCharge) {
         questionType = 'name';
     }
@@ -197,31 +210,37 @@ function checkAnswer(event) {
     if (!userAnswer) return;
 
     let isCorrect = false;
-    if (questionType === 'name') { // User is guessing the formula
+    if (questionType === 'name') {
         if (quizWithCharge && currentItem.charge) {
             const parts = userAnswer.split(' ');
-            const userFormula = parts[0];
-            const userCharge = parts[1];
-            // Normalize single +/- to 1+/- for comparison
-            const normalizedUserCharge = userCharge === '+' ? '1+' : (userCharge === '-' ? '1-' : userCharge);
-            isCorrect = userFormula.toLowerCase() === currentItem.formula.toLowerCase() && normalizedUserCharge === currentItem.charge;
+            if (parts.length < 2) {
+                isCorrect = false;
+            } else {
+                const userFormula = parts[0];
+                const userCharge = parts.slice(1).join(' '); // Handle potential extra spaces
+                const normalizedUserCharge = userCharge === '+' ? '1+' : (userCharge === '-' ? '1-' : userCharge);
+                isCorrect = userFormula.toLowerCase() === currentItem.formula.toLowerCase() && normalizedUserCharge === currentItem.charge;
+            }
         } else {
             isCorrect = userAnswer.toLowerCase() === currentItem.formula.toLowerCase();
         }
-    } else { // User is guessing the name
+    } else {
         isCorrect = userAnswer.toLowerCase() === currentItem.name.toLowerCase();
     }
 
     if (isCorrect) {
         feedbackMessage.innerHTML = `<span class="correct">Correct!</span>`;
-        quizItems = quizItems.filter(item => item !== currentItem);
+        // Remove item from quiz list
+        const index = quizItems.findIndex(item => item.name === currentItem.name && item.formula === currentItem.formula);
+        if (index > -1) quizItems.splice(index, 1);
+
         answerInput.disabled = true; hintButton.disabled = true;
         setTimeout(nextQuestion, 700);
     } else {
-        const correctAnswer = questionType === 'name' ? 
-            `${currentItem.formula}${currentItem.charge ? ` ${currentItem.charge}` : ''}` : 
-            currentItem.name;
-        feedbackMessage.innerHTML = `<span class="incorrect">Incorrect. The answer is ${correctAnswer}.</span>`;
+        // **FIXED:** Use formatFormula for the feedback message
+        const correctAnswerDisplay = `${currentItem.name} (${formatFormula(currentItem.formula, currentItem.charge)})`;
+        feedbackMessage.innerHTML = `<span class="incorrect">Incorrect. The answer is ${correctAnswerDisplay}.</span>`;
+        
         if (!wronglyAnswered.includes(currentItem)) { 
             wronglyAnswered.push(currentItem);
         }
@@ -237,10 +256,11 @@ function showHint() {
     if (currentItem && !isWaitingForContinue) {
         let hintText = '';
         if (questionType === 'name') {
-            const elements = [...new Set(currentItem.formula.replace(/[^A-Za-z]/g, ''))].join(', ');
+            const elements = [...new Set(currentItem.formula.match(/[A-Z][a-z]?/g))].join(', ');
             hintText = `Hint: The formula contains the elements: ${elements}.`;
             if (quizWithCharge && currentItem.charge) {
-                hintText += ` The charge is ${currentItem.charge}.`;
+                const chargeDisplay = currentItem.charge === '1+' ? '+' : currentItem.charge === '1-' ? '-' : currentItem.charge;
+                hintText += ` The charge is ${chargeDisplay}.`;
             }
         } else {
             const hintPrefix = currentItem.name.substring(0, 3);
@@ -277,10 +297,29 @@ function endGame() {
 function resetToSelection() {
     completionScreen.style.display = 'none';
     selectionContainer.style.display = 'block';
-    
-    // This part is for a potential "Review Wrong Answers" feature in the future
-    // For now, it just resets the form.
-    studySetCheckboxes.forEach(cb => cb.checked = false);
+
+    const existingReviewOption = document.getElementById('review-option');
+    if (existingReviewOption) {
+        existingReviewOption.remove();
+    }
+
+    if (lastWronglyAnswered.length > 0) {
+        const reviewOptionHTML = `
+            <label class="select-all" id="review-option">
+                <input type="checkbox" name="study-set" value="review-wrong">
+                Review My ${lastWronglyAnswered.length} Wrong Answers
+            </label>
+        `;
+        const studySetContainer = document.querySelector('.study-set-options');
+        studySetContainer.insertAdjacentHTML('afterbegin', reviewOptionHTML);
+        
+        // Uncheck all regular options and check the new review option
+        document.querySelectorAll('input[name="study-set"]').forEach(cb => cb.checked = false);
+        document.querySelector('input[value="review-wrong"]').checked = true;
+    } else {
+        // Reset form if there were no wrong answers
+        studySetCheckboxes.forEach(cb => cb.checked = false);
+    }
     selectAllCheckbox.checked = false;
     updateStartButtonState();
 }

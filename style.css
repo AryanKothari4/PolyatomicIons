@@ -14,7 +14,8 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /* --- THIS IS THE NEW GRADIENT --- */
+    background: linear-gradient(135deg, #13547a 0%, #80d0c7 100%);
     background-attachment: fixed;
     color: #fff;
     padding: 20px;
@@ -39,8 +40,14 @@ h1 { margin-bottom: 10px; }
 
 #progress-counter, .setup-description { margin-bottom: 30px; font-weight: 300; opacity: 0.8; }
 #question-prompt { font-size: 1.2rem; margin-bottom: 10px; font-weight: 300; }
-#question-item { font-size: 3rem; margin-bottom: 30px; min-height: 80px; display: flex; justify-content: center; align-items: center; }
-#question-item sub, #question-item sup { line-height: 0; }
+#question-item { font-size: 3rem; margin-bottom: 30px; min-height: 80px; display: flex; justify-content: center; align-items: center; word-break: break-all; }
+
+/* Subscript styling */
+#question-item sub, #wrong-answers-list sub, #feedback-message sub {
+    font-size: 0.65em;
+    vertical-align: sub;
+    line-height: normal;
+}
 
 .input-group { display: flex; gap: 10px; }
 #answer-input { flex-grow: 1; }
@@ -64,10 +71,10 @@ h1 { margin-bottom: 10px; }
 .fieldset-note { font-size: 0.8rem; text-align: center; opacity: 0.7; margin-top: 15px; }
 .fieldset-note strong { font-weight: 600; }
 
-button { padding: 15px 25px; font-size: 1rem; font-weight: 600; border: none; border-radius: 8px; background: #fff; color: #667eea; cursor: pointer; transition: all 0.2s ease; width: 100%; }
+button { padding: 15px 25px; font-size: 1rem; font-weight: 600; border: none; border-radius: 8px; background: #fff; color: #13547a; cursor: pointer; transition: all 0.2s ease; width: 100%; }
 .input-group button { width: auto; }
 button:hover { background: #f0f0f0; transform: translateY(-2px); }
-button:disabled { opacity: 0.5; cursor: not-allowed; transform: translateY(0); background: #fff; color: #667eea; }
+button:disabled { opacity: 0.5; cursor: not-allowed; transform: translateY(0); background: #fff; color: #13547a; }
 
 #hint-button { background: transparent; border: 1px solid rgba(255, 255, 255, 0.6); color: #fff; width: auto; padding: 15px; }
 #hint-button:hover:not(:disabled) { background: rgba(255, 255, 255, 0.2); }
@@ -87,6 +94,5 @@ button:disabled { opacity: 0.5; cursor: not-allowed; transform: translateY(0); b
 #wrong-answers-list { list-style-type: none; max-height: 150px; overflow-y: auto; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; }
 #wrong-answers-list li { padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.2); }
 #wrong-answers-list li:last-child { border-bottom: none; }
-#wrong-answers-list li sub, #wrong-answers-list li sup { font-size: 0.8em; }
 
 @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
