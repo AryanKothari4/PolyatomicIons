@@ -1,3 +1,4 @@
+// Data and DOM elements remain the same as before
 const compounds = [
     // Oxidation State 1-
     { name: "Dihydrogen phosphite", formula: "H2PO3", charge: "1-", category: "Oxidation State 1⁻" },
@@ -56,109 +57,67 @@ const compounds = [
     { name: "Decane", formula: "C10H22", charge: null, category: "Organic (Alkanes)" }
 ];
 
-// DOM Elements
-const selectionContainer = document.getElementById('selection-container');
-const startQuizForm = document.getElementById('start-quiz-form');
-const startQuizButton = document.getElementById('start-quiz-button');
-const studySetCheckboxes = document.querySelectorAll('input[name="study-set"]');
-const selectAllCheckbox = document.getElementById('select-all-checkbox');
-const quizBox = document.getElementById('quiz-box');
-const completionScreen = document.getElementById('completion-screen');
-const progressCounter = document.getElementById('progress-counter');
-const questionPrompt = document.getElementById('question-prompt');
-const questionItem = document.getElementById('question-item');
-const answerForm = document.getElementById('answer-form');
-const answerInput = document.getElementById('answer-input');
-const checkButton = document.getElementById('check-button');
-const hintButton = document.getElementById('hint-button');
-const feedbackMessage = document.getElementById('feedback-message');
-const continuePrompt = document.getElementById('continue-prompt');
-const restartButton = document.getElementById('restart-button');
-const finalScore = document.getElementById('final-score');
-const reviewSection = document.getElementById('review-section');
-const wrongAnswersList = document.getElementById('wrong-answers-list');
+const selectionContainer = document.getElementById('selection-container'), startQuizForm = document.getElementById('start-quiz-form'), startQuizButton = document.getElementById('start-quiz-button'), studySetCheckboxes = document.querySelectorAll('input[name="study-set"]'), selectAllCheckbox = document.getElementById('select-all-checkbox'), quizBox = document.getElementById('quiz-box'), completionScreen = document.getElementById('completion-screen'), progressCounter = document.getElementById('progress-counter'), questionPrompt = document.getElementById('question-prompt'), questionItem = document.getElementById('question-item'), answerForm = document.getElementById('answer-form'), answerInput = document.getElementById('answer-input'), checkButton = document.getElementById('check-button'), hintButton = document.getElementById('hint-button'), feedbackMessage = document.getElementById('feedback-message'), continuePrompt = document.getElementById('continue-prompt'), restartButton = document.getElementById('restart-button'), finalScore = document.getElementById('final-score'), reviewSection = document.getElementById('review-section'), wrongAnswersList = document.getElementById('wrong-answers-list');
+let quizItems = [], currentItem = null, questionType = 'name', totalItemsInQuiz = 0, quizDirection = 'random', quizWithCharge = true, isWaitingForContinue = false, wronglyAnswered = [], lastWronglyAnswered = [];
 
-// Quiz State
-let quizItems = [], currentItem = null, questionType = 'name', totalItemsInQuiz = 0;
-let quizDirection = 'random', quizWithCharge = true, isWaitingForContinue = false, wronglyAnswered = [];
-let lastWronglyAnswered = [];
+// --- NEW: UTILITY FOR SUBSCRIPTING ---
+const subscriptMap = { '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉' };
+const unsubscriptMap = { '₀': '0', '₁': '1', '₂': '2', '₃': '3', '₄': '4', '₅': '5', '₆': '6', '₇': '7', '₈': '8', '₉': '9' };
+
+function handleInputFormatting(event) {
+    const input = event.target;
+    let value = input.value;
+    let cursorPos = input.selectionStart;
+    
+    // Replace all standard digits with subscript unicode characters
+    let newValue = value.replace(/[0-9]/g, char => subscriptMap[char] || char);
+
+    if (value !== newValue) {
+        input.value = newValue;
+        input.setSelectionRange(cursorPos, cursorPos);
+    }
+}
+
+function normalizeAnswer(str) {
+    return str.replace(/[₀-₉]/g, char => unsubscriptMap[char] || char);
+}
 
 // --- UTILITY FUNCTIONS ---
 function formatFormula(formula, charge) {
     const formattedFormula = formula.replace(/(\d+)/g, '<sub>$1</sub>');
     if (!charge) return formattedFormula;
-
-    const chargeSymbol = charge.slice(-1); // + or -
-    const chargeValue = charge.slice(0, -1); // 2, 3, etc. or "" for 1
+    const chargeSymbol = charge.slice(-1);
+    const chargeValue = charge.slice(0, -1);
     const formattedCharge = (chargeValue === "1" ? "" : chargeValue) + chargeSymbol;
     return `${formattedFormula}<sup>${formattedCharge}</sup>`;
 }
 
 // --- SETUP & EVENT LISTENERS ---
-function updateStartButtonState() {
-    const anyChecked = Array.from(document.querySelectorAll('input[name="study-set"]')).some(cb => cb.checked);
-    startQuizButton.disabled = !anyChecked;
-}
-
-selectAllCheckbox.addEventListener('change', () => {
-    studySetCheckboxes.forEach(checkbox => checkbox.checked = selectAllCheckbox.checked);
-    updateStartButtonState();
-});
-
-studySetCheckboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', () => {
-        if (!checkbox.checked) {
-            selectAllCheckbox.checked = false;
-        }
-        updateStartButtonState();
-    });
-});
-
+function updateStartButtonState() { const anyChecked = Array.from(document.querySelectorAll('input[name="study-set"]')).some(cb => cb.checked); startQuizButton.disabled = !anyChecked; }
+selectAllCheckbox.addEventListener('change', () => { studySetCheckboxes.forEach(checkbox => checkbox.checked = selectAllCheckbox.checked); updateStartButtonState(); });
+studySetCheckboxes.forEach(checkbox => { checkbox.addEventListener('change', () => { if (!checkbox.checked) { selectAllCheckbox.checked = false; } updateStartButtonState(); }); });
 startQuizForm.addEventListener('submit', handleQuizStart);
 answerForm.addEventListener('submit', checkAnswer);
 hintButton.addEventListener('click', showHint);
 restartButton.addEventListener('click', resetToSelection);
+answerInput.addEventListener('input', handleInputFormatting); // NEW: Add real-time formatting listener
 
 // --- QUIZ LOGIC ---
 function handleQuizStart(event) {
     event.preventDefault();
-    
     const selectedCheckboxes = Array.from(document.querySelectorAll('input[name="study-set"]:checked'));
     const selectedCategories = selectedCheckboxes.map(cb => cb.value);
-
     quizDirection = document.querySelector('input[name="quiz-direction"]:checked').value;
     const chargeMode = document.querySelector('input[name="charge-mode"]:checked').value;
     quizWithCharge = (chargeMode === 'with-charge');
-
     const itemsForQuiz = new Set();
-    
-    // Add items from regularly selected categories
-    compounds.forEach(item => {
-        if (selectedCategories.includes(item.category)) {
-            itemsForQuiz.add(item);
-        }
-    });
-
-    // Add items from the "Review Wrong Answers" set if selected
-    if (selectedCategories.includes('review-wrong')) {
-        lastWronglyAnswered.forEach(item => itemsForQuiz.add(item));
-    }
-
+    compounds.forEach(item => { if (selectedCategories.includes(item.category)) { itemsForQuiz.add(item); } });
+    if (selectedCategories.includes('review-wrong')) { lastWronglyAnswered.forEach(item => itemsForQuiz.add(item)); }
     let selectedItems = Array.from(itemsForQuiz);
-    
-    // Filter out alkanes if quizzing with charge, since they have none
-    if (quizWithCharge) {
-        selectedItems = selectedItems.filter(item => item.category !== 'Organic (Alkanes)');
-    }
-    
-    if (selectedItems.length === 0) {
-        alert("Your selected combination resulted in no items to quiz. Please select a different combination (e.g., Alkanes cannot be quizzed 'with charge').");
-        return;
-    }
-
+    if (quizWithCharge) { selectedItems = selectedItems.filter(item => item.category !== 'Organic (Alkanes)'); }
+    if (selectedItems.length === 0) { alert("Your selected combination resulted in no items to quiz. Please select a different combination (e.g., Alkanes cannot be quizzed 'with charge')."); return; }
     startGame(selectedItems);
 }
-
 
 function startGame(selectedItems) {
     quizItems = [...selectedItems];
@@ -172,7 +131,6 @@ function startGame(selectedItems) {
 
 function nextQuestion() {
     if (quizItems.length === 0) { endGame(); return; }
-
     isWaitingForContinue = false;
     feedbackMessage.innerHTML = '';
     continuePrompt.style.display = 'none';
@@ -181,22 +139,10 @@ function nextQuestion() {
     hintButton.disabled = false;
     answerInput.value = '';
     progressCounter.textContent = `${totalItemsInQuiz - quizItems.length + 1} / ${totalItemsInQuiz}`;
-    
     const randomIndex = Math.floor(Math.random() * quizItems.length);
     currentItem = quizItems[randomIndex];
-    
-    if (quizDirection === 'random') {
-        questionType = Math.random() < 0.5 ? 'name' : 'formula';
-    } else if (quizDirection === 'name-to-formula') {
-        questionType = 'name';
-    } else {
-        questionType = 'formula';
-    }
-
-    if (questionType === 'formula' && !currentItem.charge && quizWithCharge) {
-        questionType = 'name';
-    }
-
+    if (quizDirection === 'random') { questionType = Math.random() < 0.5 ? 'name' : 'formula'; } else if (quizDirection === 'name-to-formula') { questionType = 'name'; } else { questionType = 'formula'; }
+    if (questionType === 'formula' && !currentItem.charge && quizWithCharge) { questionType = 'name'; }
     questionPrompt.textContent = questionType === 'name' ? 'What is the formula for...' : 'What is the name for...';
     questionItem.innerHTML = questionType === 'name' ? currentItem.name : formatFormula(currentItem.formula, currentItem.charge);
     answerInput.focus();
@@ -206,8 +152,11 @@ function checkAnswer(event) {
     event.preventDefault();
     if (isWaitingForContinue) { nextQuestion(); return; }
 
-    const userAnswer = answerInput.value.trim();
-    if (!userAnswer) return;
+    const rawUserAnswer = answerInput.value.trim();
+    if (!rawUserAnswer) return;
+    
+    // NEW: Normalize the subscripted answer back to a standard string for checking
+    const userAnswer = normalizeAnswer(rawUserAnswer);
 
     let isCorrect = false;
     if (questionType === 'name') {
@@ -217,33 +166,30 @@ function checkAnswer(event) {
                 isCorrect = false;
             } else {
                 const userFormula = parts[0];
-                const userCharge = parts.slice(1).join(' '); // Handle potential extra spaces
+                const userCharge = parts.slice(1).join(' ');
                 const normalizedUserCharge = userCharge === '+' ? '1+' : (userCharge === '-' ? '1-' : userCharge);
-                isCorrect = userFormula.toLowerCase() === currentItem.formula.toLowerCase() && normalizedUserCharge === currentItem.charge;
+                // UPDATED: Removed .toLowerCase() for case-sensitive check
+                isCorrect = userFormula === currentItem.formula && normalizedUserCharge === currentItem.charge;
             }
         } else {
-            isCorrect = userAnswer.toLowerCase() === currentItem.formula.toLowerCase();
+            // UPDATED: Removed .toLowerCase()
+            isCorrect = userAnswer === currentItem.formula;
         }
     } else {
-        isCorrect = userAnswer.toLowerCase() === currentItem.name.toLowerCase();
+        // UPDATED: Removed .toLowerCase()
+        isCorrect = userAnswer === currentItem.name;
     }
 
     if (isCorrect) {
         feedbackMessage.innerHTML = `<span class="correct">Correct!</span>`;
-        // Remove item from quiz list
         const index = quizItems.findIndex(item => item.name === currentItem.name && item.formula === currentItem.formula);
         if (index > -1) quizItems.splice(index, 1);
-
         answerInput.disabled = true; hintButton.disabled = true;
         setTimeout(nextQuestion, 700);
     } else {
-        // **FIXED:** Use formatFormula for the feedback message
         const correctAnswerDisplay = `${currentItem.name} (${formatFormula(currentItem.formula, currentItem.charge)})`;
         feedbackMessage.innerHTML = `<span class="incorrect">Incorrect. The answer is ${correctAnswerDisplay}.</span>`;
-        
-        if (!wronglyAnswered.includes(currentItem)) { 
-            wronglyAnswered.push(currentItem);
-        }
+        if (!wronglyAnswered.includes(currentItem)) { wronglyAnswered.push(currentItem); }
         isWaitingForContinue = true;
         answerInput.disabled = true; hintButton.disabled = true;
         checkButton.textContent = 'Continue';
@@ -275,18 +221,10 @@ function showHint() {
 function endGame() {
     quizBox.style.display = 'none';
     lastWronglyAnswered = [...wronglyAnswered];
-    finalScore.textContent = wronglyAnswered.length === 0 ? 
-        `Perfect score! You got all ${totalItemsInQuiz} correct.` : 
-        `You missed ${wronglyAnswered.length} out of ${totalItemsInQuiz} items.`;
-
+    finalScore.textContent = wronglyAnswered.length === 0 ? `Perfect score! You got all ${totalItemsInQuiz} correct.` : `You missed ${wronglyAnswered.length} out of ${totalItemsInQuiz} items.`;
     if (wronglyAnswered.length > 0) {
         wrongAnswersList.innerHTML = '';
-        wronglyAnswered.forEach(item => {
-            const listItem = document.createElement('li');
-            const formulaHTML = formatFormula(item.formula, item.charge);
-            listItem.innerHTML = `${item.name} (${formulaHTML})`;
-            wrongAnswersList.appendChild(listItem);
-        });
+        wronglyAnswered.forEach(item => { const listItem = document.createElement('li'); const formulaHTML = formatFormula(item.formula, item.charge); listItem.innerHTML = `${item.name} (${formulaHTML})`; wrongAnswersList.appendChild(listItem); });
         reviewSection.style.display = 'block';
     } else {
         reviewSection.style.display = 'none';
@@ -297,27 +235,15 @@ function endGame() {
 function resetToSelection() {
     completionScreen.style.display = 'none';
     selectionContainer.style.display = 'block';
-
     const existingReviewOption = document.getElementById('review-option');
-    if (existingReviewOption) {
-        existingReviewOption.remove();
-    }
-
+    if (existingReviewOption) { existingReviewOption.remove(); }
     if (lastWronglyAnswered.length > 0) {
-        const reviewOptionHTML = `
-            <label class="select-all" id="review-option">
-                <input type="checkbox" name="study-set" value="review-wrong">
-                Review My ${lastWronglyAnswered.length} Wrong Answers
-            </label>
-        `;
+        const reviewOptionHTML = `<label class="select-all" id="review-option"><input type="checkbox" name="study-set" value="review-wrong">Review My ${lastWronglyAnswered.length} Wrong Answers</label>`;
         const studySetContainer = document.querySelector('.study-set-options');
         studySetContainer.insertAdjacentHTML('afterbegin', reviewOptionHTML);
-        
-        // Uncheck all regular options and check the new review option
         document.querySelectorAll('input[name="study-set"]').forEach(cb => cb.checked = false);
         document.querySelector('input[value="review-wrong"]').checked = true;
     } else {
-        // Reset form if there were no wrong answers
         studySetCheckboxes.forEach(cb => cb.checked = false);
     }
     selectAllCheckbox.checked = false;
