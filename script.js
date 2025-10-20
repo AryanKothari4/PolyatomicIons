@@ -31,7 +31,6 @@ const compounds = [
     { name: "Sulfite", formula: "SO3", charge: "2-", category: "Oxidation State 2⁻" },
     { name: "Sulfate", formula: "SO4", charge: "2-", category: "Oxidation State 2⁻" },
     { name: "Oxalate", formula: "C2O4", charge: "2-", category: "Oxidation State 2⁻" },
-    // --- THIS IS THE FIXED LINE ---
     { name: "Thiosulfate", formula: "S2O3", charge: "2-", category: "Oxidation State 2⁻" },
     { name: "Silicate", formula: "SiO3", charge: "2-", category: "Oxidation State 2⁻" },
     { name: "Chromate", formula: "CrO4", charge: "2-", category: "Oxidation State 2⁻" },
@@ -56,41 +55,31 @@ const compounds = [
     { name: "Nonane", formula: "C9H20", charge: null, category: "Organic (Alkanes)" },
     { name: "Decane", formula: "C10H22", charge: null, category: "Organic (Alkanes)" }
 ];
+
 const selectionContainer = document.getElementById('selection-container'), startQuizForm = document.getElementById('start-quiz-form'), startQuizButton = document.getElementById('start-quiz-button'), studySetCheckboxes = document.querySelectorAll('input[name="study-set"]'), selectAllCheckbox = document.getElementById('select-all-checkbox'), quizBox = document.getElementById('quiz-box'), completionScreen = document.getElementById('completion-screen'), progressCounter = document.getElementById('progress-counter'), questionPrompt = document.getElementById('question-prompt'), questionItem = document.getElementById('question-item'), answerForm = document.getElementById('answer-form'), answerInput = document.getElementById('answer-input'), checkButton = document.getElementById('check-button'), hintButton = document.getElementById('hint-button'), feedbackMessage = document.getElementById('feedback-message'), continuePrompt = document.getElementById('continue-prompt'), restartButton = document.getElementById('restart-button'), finalScore = document.getElementById('final-score'), reviewSection = document.getElementById('review-section'), wrongAnswersList = document.getElementById('wrong-answers-list');
+const helpButton = document.getElementById('help-button'), helpModal = document.getElementById('help-modal'), helpModalOverlay = document.getElementById('help-modal-overlay'), closeHelpModal = document.getElementById('close-help-modal');
 let quizItems = [], currentItem = null, questionType = 'name', totalItemsInQuiz = 0, quizDirection = 'random', quizWithCharge = true, isWaitingForContinue = false, wronglyAnswered = [], lastWronglyAnswered = [];
 
 const subscriptMap = { '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉' };
 const unsubscriptMap = { '₀': '0', '₁': '1', '₂': '2', '₃': '3', '₄': '4', '₅': '5', '₆': '6', '₇': '7', '₈': '8', '₉': '9' };
 
-// --- UPDATED: Smarter function to handle subscripting only before a space ---
 function handleInputFormatting(event) {
     const input = event.target;
     let value = input.value;
     let cursorPos = input.selectionStart;
-
-    // Split the input value by the first space to separate formula from charge
     const parts = value.split(/ (.*)/s);
     const formulaPart = parts[0];
     const chargePart = parts[1] || '';
-
-    // Only apply subscripting to the formula part
     const formattedFormula = formulaPart.replace(/[0-9]/g, char => subscriptMap[char]);
-
-    // Reconstruct the value
     const newValue = formattedFormula + (parts.length > 1 ? ' ' + chargePart : '');
-
     if (value !== newValue) {
-        // Find how many characters were added/removed to adjust cursor
         const diff = newValue.length - value.length;
         input.value = newValue;
         input.setSelectionRange(cursorPos + diff, cursorPos + diff);
     }
 }
 
-function normalizeAnswer(str) {
-    return str.replace(/[₀-₉]/g, char => unsubscriptMap[char] || char);
-}
-
+function normalizeAnswer(str) { return str.replace(/[₀-₉]/g, char => unsubscriptMap[char] || char); }
 function formatFormula(formula, charge) {
     const formattedFormula = formula.replace(/(\d+)/g, '<sub>$1</sub>');
     if (!charge) return formattedFormula;
@@ -108,6 +97,10 @@ answerForm.addEventListener('submit', checkAnswer);
 hintButton.addEventListener('click', showHint);
 restartButton.addEventListener('click', resetToSelection);
 answerInput.addEventListener('input', handleInputFormatting);
+helpButton.addEventListener('click', () => { helpModal.classList.add('visible'); helpModalOverlay.classList.add('visible'); });
+const closeModal = () => { helpModal.classList.remove('visible'); helpModalOverlay.classList.remove('visible'); };
+closeHelpModal.addEventListener('click', closeModal);
+helpModalOverlay.addEventListener('click', closeModal);
 
 function handleQuizStart(event) {
     event.preventDefault();
@@ -119,9 +112,16 @@ function handleQuizStart(event) {
     const itemsForQuiz = new Set();
     compounds.forEach(item => { if (selectedCategories.includes(item.category)) { itemsForQuiz.add(item); } });
     if (selectedCategories.includes('review-wrong')) { lastWronglyAnswered.forEach(item => itemsForQuiz.add(item)); }
+    
     let selectedItems = Array.from(itemsForQuiz);
-    if (quizWithCharge) { selectedItems = selectedItems.filter(item => item.category !== 'Organic (Alkanes)'); }
-    if (selectedItems.length === 0) { alert("Your selected combination resulted in no items to quiz. Please select a different combination (e.g., Alkanes cannot be quizzed 'with charge')."); return; }
+
+    // --- THIS IS THE FIX ---
+    // The block that filtered out Alkanes when quizWithCharge was true has been REMOVED.
+    
+    if (selectedItems.length === 0) {
+        alert("Please select at least one study set to begin.");
+        return;
+    }
     startGame(selectedItems);
 }
 
@@ -162,7 +162,7 @@ function checkAnswer(event) {
     const userAnswer = normalizeAnswer(rawUserAnswer);
     let isCorrect = false;
     if (questionType === 'name') {
-        if (quizWithCharge && currentItem.charge) {
+        if (quizWithCharge && currentItem.charge) { // This condition correctly handles items without a charge (like alkanes)
             const parts = userAnswer.split(' ');
             if (parts.length < 2) { isCorrect = false; } else {
                 const userFormula = parts[0];

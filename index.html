@@ -10,6 +10,9 @@
 <body>
 
     <div class="quiz-container" id="selection-container">
+        <!-- ADD THIS HELP BUTTON -->
+        <button type="button" class="help-button" id="help-button">?</button>
+
         <h1>Polyatomic Ions Quiz</h1>
         <p class="setup-description">Select your study sets, charge mode, and quiz mode.</p>
         <form id="start-quiz-form">
@@ -32,7 +35,7 @@
                     <label><input type="radio" name="charge-mode" value="with-charge" checked> Yes</label>
                     <label><input type="radio" name="charge-mode" value="without-charge"> No</label>
                 </div>
-                <p class="fieldset-note">If "Yes", answer with formula and charge (e.g., <strong>SO4 2-</strong>)</p>
+                <p class="fieldset-note">If "Yes", answer with formula and charge (e.g., <strong>SO₄ 2-</strong>)</p>
             </fieldset>
 
             <fieldset class="quiz-mode-selector">
@@ -74,6 +77,25 @@
             <ul id="wrong-answers-list"></ul>
         </div>
         <button id="restart-button">Quiz Again</button>
+    </div>
+
+    <!-- ADD THIS MODAL STRUCTURE -->
+    <div class="modal-overlay" id="help-modal-overlay"></div>
+    <div class="modal" id="help-modal">
+        <button class="close-button" id="close-help-modal">&times;</button>
+        <h3>How to Use the Quiz</h3>
+        <p>This is a tool to help you memorize polyatomic ions and alkanes. Here's how to get started:</p>
+        <ul>
+            <li><strong>Choose Study Sets:</strong> Check the boxes for the categories you want to be quizzed on. You can select multiple, or use the "Select All" option.</li>
+            <li><strong>Quiz with Oxidation States?:</strong> 
+                <br>If you select <strong>"Yes"</strong>, you must enter both the formula and its charge, separated by a space (e.g., `SO₄ 2-` or `NH₄ +`).
+                <br>If you select <strong>"No"</strong>, you only need to enter the formula (e.g., `SO₄`). Alkanes are unaffected by this setting.</li>
+            <li><strong>Quiz Mode:</strong>
+                <br><strong>Name → Formula:</strong> You are given the name and must type the formula.
+                <br><strong>Formula → Name:</strong> You are given the formula and must type the name.
+                <br><strong>Random:</strong> The mode switches randomly for each question.</li>
+        </ul>
+        <p>After your quiz, you'll have the option to review only the questions you got wrong for targeted practice!</p>
     </div>
 
     <!-- Link to the external JavaScript file -->

@@ -21,6 +21,7 @@ body {
 }
 
 .quiz-container {
+    position: relative; /* ADD THIS LINE */
     width: 100%;
     max-width: 550px;
     padding: 40px;
@@ -48,7 +49,7 @@ h1 { margin-bottom: 10px; }
     line-height: normal;
 }
 
-/* Superscript styling (optional, but good practice to keep) */
+/* Superscript styling */
 #question-item sup, #wrong-answers-list sup, #feedback-message sup {
     font-size: 0.65em;
     vertical-align: super;
@@ -103,3 +104,113 @@ button:disabled { opacity: 0.5; cursor: not-allowed; transform: translateY(0); b
 #wrong-answers-list li:last-child { border-bottom: none; }
 
 @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+/* --- ADD THESE NEW STYLES --- */
+
+.help-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 35px;
+    height: 35px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 35px;
+    text-align: center;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.help-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(0); /* Override main button hover effect */
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    z-index: 101;
+    width: 90%;
+    max-width: 600px;
+    padding: 30px 40px;
+    background: #3a1c4b;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    text-align: left;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.modal-overlay.visible,
+.modal.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal.visible {
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.modal h3 {
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.5rem;
+}
+.modal p {
+    margin-bottom: 20px;
+    line-height: 1.6;
+    opacity: 0.9;
+}
+.modal ul {
+    list-style-position: inside;
+    margin-bottom: 20px;
+}
+.modal li {
+    margin-bottom: 15px;
+    line-height: 1.6;
+    padding-left: 5px;
+}
+.modal strong {
+    font-weight: 600;
+    color: #f0f0f0;
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+.close-button:hover {
+    color: rgba(255, 255, 255, 1);
+    transform: none; /* Override main button hover effect */
+}
