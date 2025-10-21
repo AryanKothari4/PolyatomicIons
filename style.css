@@ -21,7 +21,7 @@ body {
 }
 
 .quiz-container {
-    position: relative; /* ADD THIS LINE */
+    position: relative;
     width: 100%;
     max-width: 550px;
     padding: 40px;
@@ -54,6 +54,12 @@ h1 { margin-bottom: 10px; }
     font-size: 0.65em;
     vertical-align: super;
     line-height: normal;
+}
+
+/* --- THIS IS THE FIX --- */
+/* Add a small margin to separate a superscript that directly follows a subscript */
+sub + sup {
+    margin-left: 0.15em;
 }
 
 
@@ -105,8 +111,6 @@ button:disabled { opacity: 0.5; cursor: not-allowed; transform: translateY(0); b
 
 @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
 
-/* --- ADD THESE NEW STYLES --- */
-
 .help-button {
     position: absolute;
     top: 20px;
@@ -127,7 +131,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; transform: translateY(0); b
 }
 .help-button:hover {
     background: rgba(255, 255, 255, 0.3);
-    transform: translateY(0); /* Override main button hover effect */
+    transform: translateY(0);
 }
 
 .modal-overlay {
@@ -172,29 +176,11 @@ button:disabled { opacity: 0.5; cursor: not-allowed; transform: translateY(0); b
     transform: translate(-50%, -50%) scale(1);
 }
 
-.modal h3 {
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 1.5rem;
-}
-.modal p {
-    margin-bottom: 20px;
-    line-height: 1.6;
-    opacity: 0.9;
-}
-.modal ul {
-    list-style-position: inside;
-    margin-bottom: 20px;
-}
-.modal li {
-    margin-bottom: 15px;
-    line-height: 1.6;
-    padding-left: 5px;
-}
-.modal strong {
-    font-weight: 600;
-    color: #f0f0f0;
-}
+.modal h3 { margin-bottom: 20px; text-align: center; font-size: 1.5rem; }
+.modal p { margin-bottom: 20px; line-height: 1.6; opacity: 0.9; }
+.modal ul { list-style-position: inside; margin-bottom: 20px; }
+.modal li { margin-bottom: 15px; line-height: 1.6; padding-left: 5px; }
+.modal strong { font-weight: 600; color: #f0f0f0; }
 
 .close-button {
     position: absolute;
@@ -212,5 +198,5 @@ button:disabled { opacity: 0.5; cursor: not-allowed; transform: translateY(0); b
 }
 .close-button:hover {
     color: rgba(255, 255, 255, 1);
-    transform: none; /* Override main button hover effect */
+    transform: none;
 }

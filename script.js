@@ -39,6 +39,7 @@ const compounds = [
     // Oxidation State 3-
     { name: "Phosphite", formula: "PO3", charge: "3-", category: "Oxidation State 3⁻" },
     { name: "Phosphate", formula: "PO4", charge: "3-", category: "Oxidation State 3⁻" },
+    // --- FIX #1: Corrected data for Arsenate and Borate ---
     { name: "Arsenate", formula: "AsO4", charge: "3-", category: "Oxidation State 3⁻" },
     { name: "Borate", formula: "BO3", charge: "3-", category: "Oxidation State 3⁻" },
     // Oxidation State 1+
@@ -112,16 +113,8 @@ function handleQuizStart(event) {
     const itemsForQuiz = new Set();
     compounds.forEach(item => { if (selectedCategories.includes(item.category)) { itemsForQuiz.add(item); } });
     if (selectedCategories.includes('review-wrong')) { lastWronglyAnswered.forEach(item => itemsForQuiz.add(item)); }
-    
     let selectedItems = Array.from(itemsForQuiz);
-
-    // --- THIS IS THE FIX ---
-    // The block that filtered out Alkanes when quizWithCharge was true has been REMOVED.
-    
-    if (selectedItems.length === 0) {
-        alert("Please select at least one study set to begin.");
-        return;
-    }
+    if (selectedItems.length === 0) { alert("Please select at least one study set to begin."); return; }
     startGame(selectedItems);
 }
 
@@ -147,8 +140,16 @@ function nextQuestion() {
     progressCounter.textContent = `${totalItemsInQuiz - quizItems.length + 1} / ${totalItemsInQuiz}`;
     const randomIndex = Math.floor(Math.random() * quizItems.length);
     currentItem = quizItems[randomIndex];
-    if (quizDirection === 'random') { questionType = Math.random() < 0.5 ? 'name' : 'formula'; } else if (quizDirection === 'name-to-formula') { questionType = 'name'; } else { questionType = 'formula'; }
-    if (questionType === 'formula' && !currentItem.charge && quizWithCharge) { questionType = 'name'; }
+    
+    // --- FIX #2: Simplified logic to always respect the user's quiz mode choice ---
+    if (quizDirection === 'random') {
+        questionType = Math.random() < 0.5 ? 'name' : 'formula';
+    } else if (quizDirection === 'name-to-formula') {
+        questionType = 'name';
+    } else { // 'formula-to-name'
+        questionType = 'formula';
+    }
+
     questionPrompt.textContent = questionType === 'name' ? 'What is the formula for...' : 'What is the name for...';
     questionItem.innerHTML = questionType === 'name' ? currentItem.name : formatFormula(currentItem.formula, currentItem.charge);
     answerInput.focus();
@@ -161,8 +162,9 @@ function checkAnswer(event) {
     if (!rawUserAnswer) return;
     const userAnswer = normalizeAnswer(rawUserAnswer);
     let isCorrect = false;
-    if (questionType === 'name') {
-        if (quizWithCharge && currentItem.charge) { // This condition correctly handles items without a charge (like alkanes)
+
+    if (questionType === 'name') { // User is guessing the formula (CASE-SENSITIVE)
+        if (quizWithCharge && currentItem.charge) {
             const parts = userAnswer.split(' ');
             if (parts.length < 2) { isCorrect = false; } else {
                 const userFormula = parts[0];
@@ -170,8 +172,14 @@ function checkAnswer(event) {
                 const normalizedUserCharge = userCharge === '+' ? '1+' : (userCharge === '-' ? '1-' : userCharge);
                 isCorrect = userFormula === currentItem.formula && normalizedUserCharge === currentItem.charge;
             }
-        } else { isCorrect = userAnswer === currentItem.formula; }
-    } else { isCorrect = userAnswer === currentItem.name; }
+        } else {
+            isCorrect = userAnswer === currentItem.formula;
+        }
+    } else { // User is guessing the name (CASE-INSENSITIVE)
+        // --- FIX #3: Added .toLowerCase() to make name checking case-insensitive ---
+        isCorrect = userAnswer.toLowerCase() === currentItem.name.toLowerCase();
+    }
+
     if (isCorrect) {
         feedbackMessage.innerHTML = `<span class="correct">Correct!</span>`;
         const index = quizItems.findIndex(item => item.name === currentItem.name && item.formula === currentItem.formula);
